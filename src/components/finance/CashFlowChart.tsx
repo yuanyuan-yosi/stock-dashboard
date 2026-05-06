@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useFinanceStore } from '../../stores/financeStore';
 import { formatPrice } from '../../utils/format';
 import { Card } from '../ui/Card';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Line, ComposedChart, Legend } from 'recharts';
+import { Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Line, ComposedChart, Legend } from 'recharts';
 
 function getMonthKey(dateStr: string): string {
   return dateStr.slice(0, 7);
@@ -72,7 +72,7 @@ export function CashFlowChart() {
               tick={{ fontSize: 10, fill: '#6b7280' }}
               axisLine={false}
               tickLine={false}
-              tickFormatter={(v) => `€{formatPrice(v)}`}
+              tickFormatter={(_v) => `€${formatPrice(_v)}`}
               width={70}
             />
             <Tooltip
@@ -82,9 +82,9 @@ export function CashFlowChart() {
                 borderRadius: '8px',
                 fontSize: '12px',
               }}
-              formatter={(value: number, name: string) => {
+              formatter={(value: any, name: any) => {
                 const labels: Record<string, string> = { income: '收入', expense: '支出', net: '净额' };
-                return [`€{formatPrice(value)}`, labels[name] || name];
+                return [`€${formatPrice(value)}`, labels[name] || name];
               }}
             />
             <Legend

@@ -2,7 +2,7 @@ import { useFinanceStore } from '../../stores/financeStore';
 import { formatPrice } from '../../utils/format';
 import { Card } from '../ui/Card';
 
-function getCurrentMonthEntries(entries: Array<{ date: string; type: string; recurring: boolean; amount: number }>) {
+function getCurrentMonthEntries(entries: Array<{ date: string; type: string; recurring: boolean; amount: number; category?: string }>) {
   const now = new Date();
   const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   return entries.filter((e) => e.date.startsWith(ym));
@@ -29,12 +29,14 @@ export function CostOfLiving() {
 
   const topCategories = expenseEntries
     .reduce<Record<string, number>>((acc, e) => {
-      acc[e.category] = (acc[e.category] || 0) + e.amount;
+      const cat = e.category ?? 'other';
+      acc[cat] = (acc[cat] || 0) + e.amount;
       return acc;
     }, {})
     ? Object.entries(
         expenseEntries.reduce<Record<string, number>>((acc, e) => {
-          acc[e.category] = (acc[e.category] || 0) + e.amount;
+          const cat = e.category ?? 'other';
+          acc[cat] = (acc[cat] || 0) + e.amount;
           return acc;
         }, {})
       )

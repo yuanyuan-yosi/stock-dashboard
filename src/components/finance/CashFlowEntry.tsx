@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFinanceStore } from '../../stores/financeStore';
-import type { FinanceCategory, FinanceEntry } from '../../types';
+import type { FinanceCategory } from '../../types';
 import { formatPrice } from '../../utils/format';
 import { getChangeColor } from '../../utils/color';
 import { Card } from '../ui/Card';

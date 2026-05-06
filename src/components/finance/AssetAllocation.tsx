@@ -52,7 +52,7 @@ export function AssetAllocation() {
                   borderRadius: '8px',
                   fontSize: '12px',
                 }}
-                formatter={(value: number) => [`€${formatPrice(value)}`, 'Amount']}
+                formatter={(value: any) => [`€${formatPrice(value)}`, 'Amount']}
               />
             </PieChart>
           </ResponsiveContainer>

@@ -108,8 +108,8 @@ function FedRateChart() {
           />
           <Tooltip
             contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, fontSize: 12 }}
-            labelFormatter={formatTooltipDate}
-            formatter={(value: number) => [`${value.toFixed(2)}%`, 'Rate']}
+            labelFormatter={(label: any) => formatTooltipDate(String(label))}
+            formatter={(value: any) => [`${Number(value).toFixed(2)}%`, 'Rate']}
           />
           <Area
             type="stepAfter"
@@ -174,8 +174,8 @@ function NfpChart() {
           />
           <Tooltip
             contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, fontSize: 12 }}
-            labelFormatter={formatTooltipDate}
-            formatter={(value: number) => [`${value >= 0 ? '+' : ''}${value}K`, 'Change']}
+            labelFormatter={(label: any) => formatTooltipDate(String(label))}
+            formatter={(value: any) => [`${Number(value) >= 0 ? '+' : ''}${value}K`, 'Change']}
           />
           <Bar
             dataKey="change"
@@ -200,7 +200,11 @@ function CpiChart() {
       const yoy = yearAgo > 0 ? ((d.value - yearAgo) / yearAgo) * 100 : 0;
       return { date: d.date, yoy: parseFloat(yoy.toFixed(2)) };
     });
-    return filterByYears(full as EconDataPoint[], range === '2Y' ? 2 : range === '5Y' ? 5 : range === '10Y' ? 10 : 100);
+    const years = range === '2Y' ? 2 : range === '5Y' ? 5 : range === '10Y' ? 10 : 100;
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - years);
+    const cutoffStr = cutoff.toISOString().split('T')[0];
+    return full.filter((d) => d.date >= cutoffStr);
   }, [data, range]);
 
   return (
@@ -236,8 +240,8 @@ function CpiChart() {
           />
           <Tooltip
             contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, fontSize: 12 }}
-            labelFormatter={formatTooltipDate}
-            formatter={(value: number) => [`${value.toFixed(2)}%`, 'YoY']}
+            labelFormatter={(label: any) => formatTooltipDate(String(label))}
+            formatter={(value: any) => [`${Number(value).toFixed(2)}%`, 'YoY']}
           />
           <Line
             type="monotone"
@@ -323,9 +327,9 @@ function GdpChart() {
           />
           <Tooltip
             contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, fontSize: 12 }}
-            labelFormatter={formatTooltipDate}
-            formatter={(value: number, name: string) =>
-              name === 'gdp' ? [`$${value}T`, 'GDP'] : [`${value >= 0 ? '+' : ''}${value}%`, 'Growth']
+            labelFormatter={(label: any) => formatTooltipDate(String(label))}
+            formatter={(value: any, name: any) =>
+              name === 'gdp' ? [`$${value}T`, 'GDP'] : [`${Number(value) >= 0 ? '+' : ''}${value}%`, 'Growth']
             }
           />
           <Area
@@ -342,8 +346,9 @@ function GdpChart() {
             dataKey="growth"
             stroke={CHART_COLORS.primary}
             strokeWidth={1.5}
-            dot={(props: { cx: number; cy: number; payload: { growth: number } }) => {
+            dot={(props: any) => {
               const { cx, cy, payload } = props;
+              if (cx == null || cy == null) return null;
               return (
                 <circle
                   key={`dot-${cx}-${cy}`}
